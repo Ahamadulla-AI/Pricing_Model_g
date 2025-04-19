@@ -1,0 +1,23 @@
+# Data manipulation and numerical computing
+pandas>=1.3.0
+numpy>=1.21.0
+python-dotenv>=0.19.0
+
+# Machine learning and related utilities
+scikit-learn>=1.0.0
+joblib>=1.1.0
+
+# Interactive computing (Jupyter notebooks)
+jupyter>=1.0.0
+
+# Model tracking and experiment management
+mlflow>=2.0.0
+
+# Visualization and profiling
+matplotlib>=3.4.0
+seaborn>=0.11.0
+shap>=0.40.0
+ydata-profiling>=3.2.0
+
+# Model monitoring and explainability
+evidently>=0.2.6

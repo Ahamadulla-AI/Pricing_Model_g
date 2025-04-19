@@ -1,0 +1,33 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Env and secrets
+.env
+*.env
+
+# VS Code and OS stuff
+.vscode/
+*.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Jupyter notebooks (if not needed in container)
+*.ipynb
+
+# Test and development artifacts
+tests/
+*.log
+
+# Virtual environment
+venv/
+.env/
