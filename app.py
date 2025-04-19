@@ -5,6 +5,10 @@ import uvicorn
 from fastapi import FastAPI
 import logging
 import os
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi import Depends, HTTPException, status
+import secrets
+from src.Auth_services import get_current_username
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -35,11 +39,11 @@ logging.basicConfig(
 app = FastAPI()
 
 @app.get("/")
-async def root():
-    return {"message": "Pricing model API is up and running!"}
+async def root(username: str = Depends(get_current_username)):
+    return {"message": f"Welcome {username}, Pricing model API is up and running!"}
 
 @app.get("/Pricing_Model")
-async def predict_pricing(ProductID: str, ActualPrice: float):
+async def predict_pricing(ProductID: str, ActualPrice: float, username: str = Depends(get_current_username)):
     try:
         logging.info("Received request with ProductID: %s, ActualPrice: %f", ProductID, ActualPrice)
         
