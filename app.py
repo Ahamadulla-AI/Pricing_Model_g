@@ -17,8 +17,8 @@ load_dotenv()
 import mlflow
 
 
-data_path = os.getenv("DATA_PATH")
-model_path = os.getenv("MODEL_PATH")
+data_path_ = os.getenv("DATA_PATH")
+model_path_ = os.getenv("MODEL_PATH")
 
 
 api_url = os.getenv("API_URL")
@@ -26,8 +26,8 @@ username = os.getenv("API_USERNAME")
 password = os.getenv("API_PASSWORD")
 
 log_dir = "logs"
-data_path = "data/Product_Pricing_api.csv"
-model_path = "models/RandomForest_price_predictor.pkl"
+data_path = data_path_
+model_path = model_path_
 # Setup logging: Create log directory and file
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "model_training_logs.log")
