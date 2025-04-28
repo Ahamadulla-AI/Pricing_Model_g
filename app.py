@@ -26,8 +26,8 @@ username = os.getenv("API_USERNAME")
 password = os.getenv("API_PASSWORD")
 
 log_dir = "logs"
-#data_path = "data/Product_Pricing_api.csv"
-#model_path = "models/RandomForest_price_predictor_20250417_220348.pkl"
+data_path = "data/Product_Pricing_api.csv"
+model_path = "models/RandomForest_price_predictor.pkl"
 # Setup logging: Create log directory and file
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "model_training_logs.log")
