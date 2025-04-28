@@ -84,11 +84,11 @@ async def model_training():
     try:
         # Set MLflow tracking URI
         mlflow.set_tracking_uri("file:///D:/EUR_AI_MASTER_PROJECTS/Pricing_Model_g/MlFlow_Tracking")
-        model_path = r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\models'
-        predictor = PricePredictor(model_choice='RandomForest', model_dir=model_path)
+        #model_path = r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\models'
+        predictor = PricePredictor(model_choice='RandomForest', model_dir=model_path_)
         
-        file_path = r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\data\Product_Pricing_api.csv'
-        df = predictor.load_data(file_path)
+        #file_path = r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\data\Product_Pricing_api.csv'
+        df = predictor.load_data(data_path_)
         X_train, X_test, y_train, y_test = predictor.prepare_data(df)
         
         predictor.train(X_train, y_train)
@@ -100,7 +100,7 @@ async def model_training():
         actual = y_test.iloc[0]
         
         result = {
-            "status": "success",
+            "status": "success", 
             "sample_prediction": {
                 "actual_value": float(actual),
                 "predicted_value": float(prediction[0])
@@ -123,7 +123,7 @@ async def predict_pricing(ProductID: str, ActualPrice: float, username: str = De
         logging.info("Received request with ProductID: %s, ActualPrice: %f", ProductID, ActualPrice)
         
         # Load dataset and compute additional columns needed for prediction
-        df = pd.read_csv(data_path)
+        df = pd.read_csv(data_path_)
         df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d', errors='coerce')
         df['LastUpdated'] = pd.to_datetime(df['LastUpdated'], format='%Y-%m-%d', errors='coerce')
         df['DaysSinceLastUpdate'] = (df['Date'] - df['LastUpdated']).dt.days
