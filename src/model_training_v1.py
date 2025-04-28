@@ -23,7 +23,7 @@ import logging
 import os
 
 # Define the log directory and filename
-log_dir = r"D:\EUR_AI_MASTER_PROJECTS\AI_Based_Product_Pricing\logs"
+log_dir = r"D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\logs"
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "model_training_logs.log")
 
@@ -226,7 +226,7 @@ class PricePredictor:
         """
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            model_file = os.path.join(self.model_dir, f"{self.model_choice}_price_predictor_{timestamp}.pkl")
+            model_file = os.path.join(self.model_dir, f"{self.model_choice}_price_predictor.pkl")
             joblib.dump(self.pipeline, model_file)
             logging.info("Model saved to: %s", model_file)
             print("Model saved to:", model_file)

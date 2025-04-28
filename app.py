@@ -9,13 +9,21 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi import Depends, HTTPException, status
 import secrets
 from src.Auth_services import get_current_username
-
+from src.Get_Data_API_to_csv import APICsvExporter
+from src.model_training_v1 import PricePredictor
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 load_dotenv()
+import mlflow
 
 
-data_path = os.getenv("DATA_PATH", "data/Product_Pricing_api.csv")
-model_path = os.getenv("MODEL_PATH", "models/RandomForest_price_predictor_20250417_220348.pkl")
+data_path = os.getenv("DATA_PATH")
+model_path = os.getenv("MODEL_PATH")
+
+
+api_url = os.getenv("API_URL")
+username = os.getenv("API_USERNAME")
+password = os.getenv("API_PASSWORD")
 
 log_dir = "logs"
 #data_path = "data/Product_Pricing_api.csv"
@@ -41,6 +49,73 @@ app = FastAPI()
 @app.get("/")
 async def root(username: str = Depends(get_current_username)):
     return {"message": f"Welcome {username}, Pricing model API is up and running!"}
+
+@app.get("/get_api_data")
+async def get_api_data():
+    try:
+        # Configuration
+        config = {
+        'api_url': api_url,
+        'username': username,
+        'password': password,
+        'csv_filename': r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\data\Product_Pricing_api.csv'
+    }
+        print(config)
+        # Create and run exporter
+        exporter = APICsvExporter(**config)
+        exporter.run()
+        
+        result = {
+            "status": "success",
+            "message": f"Data successfully fetched and saved to {config['csv_filename']}"
+        }
+        return JSONResponse(content=result)
+    
+    except Exception as e:
+        error_result = {
+            "status": "error",
+            "message": str(e)
+        }
+        return JSONResponse(content=error_result, status_code=500)
+
+@app.get("/model_training")
+
+async def model_training():
+    try:
+        # Set MLflow tracking URI
+        mlflow.set_tracking_uri("file:///D:/EUR_AI_MASTER_PROJECTS/Pricing_Model_g/MlFlow_Tracking")
+        model_path = r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\models'
+        predictor = PricePredictor(model_choice='RandomForest', model_dir=model_path)
+        
+        file_path = r'D:\EUR_AI_MASTER_PROJECTS\Pricing_Model_g\data\Product_Pricing_api.csv'
+        df = predictor.load_data(file_path)
+        X_train, X_test, y_train, y_test = predictor.prepare_data(df)
+        
+        predictor.train(X_train, y_train)
+        metrics = predictor.evaluate(X_test, y_test)
+        predictor.save_model()
+        
+        sample_data = X_test.iloc[[0]]
+        prediction = predictor.predict(sample_data)
+        actual = y_test.iloc[0]
+        
+        result = {
+            "status": "success",
+            "sample_prediction": {
+                "actual_value": float(actual),
+                "predicted_value": float(prediction[0])
+            },
+            "metrics": metrics
+        }
+        return JSONResponse(content=result)
+    
+    except Exception as main_e:
+        error_result = {
+            "status": "error",
+            "message": str(main_e)
+        }
+        return JSONResponse(content=error_result, status_code=500)
+
 
 @app.get("/Pricing_Model")
 async def predict_pricing(ProductID: str, ActualPrice: float, username: str = Depends(get_current_username)):
